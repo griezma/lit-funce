@@ -1,6 +1,6 @@
 {
   "name": "lit-funce",
-  "version": "1.0.0",
+  "version": "1.0.0-beta.0",
   "author": "@griezma <griezma@github.com>",
   "license": "MIT",
   "main": "lit-funce.js",
