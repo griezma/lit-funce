@@ -1,0 +1,29 @@
+{
+  "name": "lit-funce",
+  "version": "1.0.0",
+  "author": "@griezma <griezma@github.com>",
+  "license": "MIT",
+  "main": "lit-funce.js",
+  "types": "lit-funce.d.ts",
+  "type": "module",
+  "files": [
+    "lit-funce.js", 
+    "lit-funce.d.ts"],
+  "scripts": {
+    "dev": "wds -a samples/index.html --node-resolve -wo",
+    "build": "tsc",
+    "buildw": "tsc -w",
+    "test": "tsc && wtr \"./test/*.test.js\" --node-resolve",
+    "clean": "rm *.log"
+  },
+  "devDependencies": {
+    "@esm-bundle/chai": "^4.1.5",
+    "@web/dev-server": "^0.0.19",
+    "@web/test-runner": "^0.9.7",
+    "lit-html": "^1.3.0",
+    "typescript": "^4.0.5"
+  },
+  "peerDependencies": {
+    "lit-html": "^1.3.0"
+  }
+}
