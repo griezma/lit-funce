@@ -1,6 +1,6 @@
 # [lit-funce] lit-html Functional Custom Elements
 
-Mini helper for writing functional web components using lit-html.
+Mini helper for writing functional web components using [lit-html]("https://lit-html.polymer-project.org/").
 
 ## Installation
 ```
@@ -8,7 +8,7 @@ yarn add lit-html
 yarn add lit-funcel
 ```
 Or optionally `npm install lit-...`.  
-Notice the peer dependency to [lit-html]("https://lit-html.polymer-project.org/").
+Notice the peer dependency to lit-html.
 
 ----
 
