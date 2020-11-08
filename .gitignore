@@ -1,4 +1,7 @@
 node_modules/
-*.lock
 *.debug
-*.map
+*.lock
+*.log
+*.d.ts
+*.js.map
+lit-funce.js
