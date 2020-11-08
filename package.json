@@ -17,7 +17,7 @@
     "lit-funce.d.ts",
     "lit-funces.js.map"],
   "scripts": {
-    "dev": "wds -a samples/index.html --node-resolve -wo",
+    "dev": "wds -a samples/samples.html --node-resolve -wo",
     "build": "tsc",
     "buildw": "tsc -w",
     "test": "tsc && wtr \"./test/*.test.js\" --node-resolve",

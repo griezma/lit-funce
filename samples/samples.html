@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lit-funce samples</title>
+    <style>
+        :root {
+            --button-color: white;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+        }
+        section {
+            padding: 8px;
+        }
+        a-button {
+            color: white;
+        }
+    </style>
+    
+    <script type="module">
+        import './abutton.js'
+        import './aclock.js'
+    </script>
+</head>
+<body>
+    <h1>lit-funce samples</h1>
+    <section>
+        <h2>[a-button]</h2>
+        <a-button color="blue"></a-button>
+    </section>
+    <section>
+        <h2>[a-clock]</h2>
+        <a-clock interval="16" style="font-size: 3em; color: red"></a-clock>
+    </section>
+</body>
+</html>

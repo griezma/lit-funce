@@ -82,9 +82,8 @@ function defineElement(
       }
     }
 
-    render() {
-      return render(renderFn(this), this.root);
-    }
+    render = () =>  render(renderFn(this), this.root);
+
   };
 
   customElements.define(tag, WrapperClass);
