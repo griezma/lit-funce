@@ -38,7 +38,7 @@ defineElement("a-button", aButton, props);
 <html>
     <script type="module">
         import "abutton.js"
-    <script>
+    </script>
 
     <a-button color="blue"></a-button>
 </html>
