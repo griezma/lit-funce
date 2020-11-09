@@ -1,6 +1,9 @@
 import { html, render, TemplateResult } from 'lit-html';
 
+import throttle from './lib/simpleThrottle';
+
 export { defineElement, html, render, HostElement };
+
 
 // just do be more specific
 interface HostElement extends HTMLElement {
@@ -35,18 +38,20 @@ function converterFn(prop: string, propTypes: PropTypes): ConverterFn {
 }
 
 interface Options {
-  shadow: boolean
+  shadow: boolean,
+  throttled: number
 }
 
 const defaultOptions = {
-  shadow: true
+  shadow: true,
+  throttled: 20
 }
 
 function defineElement(
   tag: string,
   renderFn: RenderFunction,
   propTypes: PropTypes,
-  { shadow }: Options = defaultOptions
+  { shadow, throttled }: Options = defaultOptions
 ) {
   const propKeys = propTypes ? Object.keys(propTypes) : [];
   const converterMap = propKeys.reduce(
@@ -61,7 +66,7 @@ function defineElement(
       return propKeys;
     }
 
-    constructor(public root) {
+    constructor(public readonly root, private litRender) {
       super()
       if (shadow) {
         this.root = this.attachShadow({mode: 'open'});
@@ -69,6 +74,8 @@ function defineElement(
         this.root = this;
       }
       propKeys.forEach(name => this[name] = converterMap[name](null));
+
+      this.litRender = throttled > 0 ? throttle(render, throttled) : render;
     }
 
     connectedCallback() {
@@ -82,8 +89,7 @@ function defineElement(
       }
     }
 
-    render = () =>  render(renderFn(this), this.root);
-
+    render = () => this.litRender(renderFn(this), this.root);
   };
 
   customElements.define(tag, WrapperClass);
