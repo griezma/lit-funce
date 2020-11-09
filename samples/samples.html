@@ -15,22 +15,37 @@
         a-button {
             color: white;
         }
+        .red {
+            color: red;
+        }
     </style>
     
     <script type="module">
         import './abutton.js'
         import './aclock.js'
+        
+        import { defineElement as fce, html } from '../lit-funce.js'
+
+        fce("a-hey", 
+            ({who}) => html`
+                <h2>hey <span class="red">${who}</span></h2>`, 
+            { who: "string" },
+            { shadow: false });
     </script>
 </head>
 <body>
     <h1>lit-funce samples</h1>
+
+    <a-hey who="there"></a-hey>
+
     <section>
         <h2>[a-button]</h2>
         <a-button color="blue"></a-button>
     </section>
+
     <section>
         <h2>[a-clock]</h2>
-        <a-clock interval="16" style="font-size: 3em; color: red"></a-clock>
+        <a-clock interval="16" style="font-size: 3em; color: grey"></a-clock>
     </section>
 </body>
 </html>

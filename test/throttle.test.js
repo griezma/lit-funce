@@ -36,7 +36,6 @@ describe("throttle", async function() {
         const debFn = throttle(cc.call, 100);
         challenge(debFn, 5, 500);
         await wait(501);
-        console.log({count: cc.count});
         assert.equal(cc.count(), 5);
     });
 });

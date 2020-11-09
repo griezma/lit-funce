@@ -6,8 +6,7 @@ const props = {
 
 function aClock(el) {
     if (el._timer === undefined) {
-        const interval = el.interval || 15;
-        el._timer = setInterval(el.render, interval);
+        el._timer = setInterval(el.render, 1);
     }
 
     return html`
@@ -15,4 +14,4 @@ function aClock(el) {
     `;
 }
 
-defineElement("a-clock", aClock, props);
+defineElement("a-clock", aClock, props, {throttled: 23});

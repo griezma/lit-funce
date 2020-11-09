@@ -21,8 +21,7 @@
     "dev": "wds -a samples/samples.html --node-resolve -wo",
     "build": "tsc",
     "buildw": "tsc -w",
-    "test": "wtr \"./test/*.test.js\" --node-resolve",
-    "clean": "rm *.d.ts && rm *.js.map"
+    "test": "wtr \"./test/*.test.js\" --node-resolve"
   },
   "devDependencies": {
     "@esm-bundle/chai": "^4.1.5",

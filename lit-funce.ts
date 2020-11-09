@@ -4,7 +4,6 @@ import throttle from './lib/simpleThrottle';
 
 export { defineElement, html, render, HostElement };
 
-
 // just do be more specific
 interface HostElement extends HTMLElement {
   render(): void;
