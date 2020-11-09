@@ -1,6 +1,6 @@
 {
   "name": "lit-funce",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.4",
   "author": "griezma",
   "repository": {
     "type": "git",
@@ -15,8 +15,10 @@
     "lit-funce.js",
     "lit-funce.ts",
     "lit-funce.d.ts",
-    "lit-funces.js.map"
+    "lit-funce.js.map",
+    "lib"
   ],
+  "fileD": [],
   "scripts": {
     "dev": "wds -a samples/samples.html --node-resolve -wo",
     "build": "tsc",
