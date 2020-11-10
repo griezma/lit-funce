@@ -1,9 +1,8 @@
 import { defineElement, html } from '../lit-funce.js';
 
 const props = { 
-    types: {
-        interval: "number"
-    }
+    interval: "string",
+    
 }
 
 function aClock(el) {
