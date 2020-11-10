@@ -1,14 +1,8 @@
 import { defineElement, html } from '../lit-funce.js';
 
-const props = { 
-    interval: "string",
-    
-}
-
 function aClock(el) {
-    el.init?.props(props);
 
-    if (el._timer === undefined) {
+    if (el.init) {
         el._timer = setInterval(el.render, 1);
     }
 
@@ -17,4 +11,4 @@ function aClock(el) {
     `;
 }
 
-defineElement("a-clock", aClock, {throttled: 23});
+defineElement("a-clock", aClock, "interval", {throttled: 23});

@@ -36,13 +36,11 @@
 
         fce("a-hey", 
             ({ who, init }) => {
-                init?.props(props);
-
                 return html`
                     <h2>hey <span class="red">${who}</span></h2>
                 `
             },
-            ['who'],
+            props,
             noShadow);
     </script>
 </head>

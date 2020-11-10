@@ -2,8 +2,9 @@ export { propsMetaData, PropDefs }
 
 const ident = val => val;
 const toNum = val => +val;
+const isDefined = val => !(val === undefined || val === null);
 
-function findConverter(type): (string)=>unknown {
+function converterByType(type): (string)=>unknown {
   switch (type) {
     case "string": return ident;
     case "number": return toNum;
@@ -13,10 +14,25 @@ function findConverter(type): (string)=>unknown {
   return ident;
 }
 
+function convertedByValue(val: string): unknown {
+  console.log("convertedByVal", {val});
+  
+  if (!isNaN(+val)) {
+    return toNum(val);
+  }
+  if (["true", "false"].includes(val)) {
+    return Boolean(val);
+  }
+  if (val.startsWith('{')) {
+    return JSON.parse(val);
+  }
+  return val;
+}
+
 function derivePropMeta(propdef) {
   let type;
   let value;
-  let converterfn = ident;
+  let convertfn = ident;
 
   const typeofDef = typeof propdef;
 
@@ -24,36 +40,22 @@ function derivePropMeta(propdef) {
 
   if (typeofDef === "string" && basicTypes.includes(propdef)) {
     type = propdef;
-    converterfn = findConverter(type);
-    value = converterfn('');
+    convertfn = converterByType(type);
   }
   else if (basicTypes.includes(typeofDef)) {
     type = typeofDef;
-    converterfn = findConverter(type);
+    convertfn = converterByType(type);
     value = propdef;
   } 
   else if (typeofDef === "function") {
     type = typeofDef;
-    converterfn = propdef;
+    convertfn = propdef;
   } 
   else {
     type = typeofDef;
     value = propdef;
   }
-  return { type, value, converterfn };
-}
-
-function guessValType(val: string): string {
-  if (!isNaN(+val)) {
-    return "number";
-  }
-  if (["true", "false"].includes(val)) {
-    return "boolean";
-  }
-  if (val.startsWith('{')) {
-    return "json";
-  }
-  return "string";
+  return { type, value, convertfn };
 }
 
 function derivePropMetaMap(props: string[], propDefs) {
@@ -74,33 +76,31 @@ function propsMetaData(tag, propDefs: PropDefs = []) {
   if (Array.isArray(propDefs)) {
     propNames = propDefs as string[];
   } else {
-    registerProps(propDefs);
+    defineProps(propDefs);
   }
 
-  function registerProps(propDefs) {
+  function defineProps(propDefs) {
     const keys = Object.keys(propDefs);
     propNames = keys;
     propMetaMap = derivePropMetaMap(keys, propDefs);
   }
 
   function convertValue(prop, value, init = false) {
-    const meta = propMetaMap[prop];
+    const { convertfn } = propMetaMap[prop] || {};
     // console.log("convert", tag, {prop, value, init, meta});
-    if (meta) {
-      const { converterfn } = meta;
-      return converterfn ? converterfn(value) : value;
+    if (convertfn) {
+      return convertfn(value);
     } else if (init) {
-      const type = guessValType(value);
-      const converter = findConverter(type);
       // console.log("convertValue", tag, {value, type, converter});
-      return converter ? converter(value) : value;
+      return convertedByValue(value);
     }
     return value;
   }
 
   function getDefault(prop: string) {
-   //console.log("getDefault", tag);
-    return propMetaMap[prop]?.value;
+    //console.log("getDefault", tag);
+    const { value, convertfn } = propMetaMap[prop];
+    return isDefined(value) ? value : convertfn('');
   }
 
   function getProps() {
@@ -111,6 +111,6 @@ function propsMetaData(tag, propDefs: PropDefs = []) {
     getProps,
     getDefault,
     convertValue,
-    registerProps
+    defineProps
   }
 }
