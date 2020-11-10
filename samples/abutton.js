@@ -1,10 +1,6 @@
 import { defineElement, html } from '../lit-funce.js';
 import {styleMap} from 'lit-html/directives/style-map.js';
 
-const props = {
-  color: "string"
-};
-
 const buttonStyles = {
   border: "none",
   fontWeight: "bold",
@@ -37,4 +33,4 @@ function aButton(el) {
   `;
 }
 
-defineElement("a-button", aButton, props);
+defineElement("a-button", aButton, ['color']);

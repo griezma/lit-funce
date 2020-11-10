@@ -1,6 +1,6 @@
 # [lit-funce] lit-html Functional Custom Elements
 
-Mini helper for writing functional web components using [lit-html](https://lit-html.polymer-project.org/).
+A <sub>funky but not too funcy</sub> helper for writing functional web components using [lit-html](https://lit-html.polymer-project.org/).
 
 ## Installation
 ```

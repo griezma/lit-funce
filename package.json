@@ -18,11 +18,11 @@
     "lit-funce.js.map",
     "lib"
   ],
-  "fileD": [],
   "scripts": {
-    "dev": "wds -a samples/samples.html --node-resolve -wo",
+    "serve": "wds -a samples/samples.html --node-resolve -wo",
     "build": "tsc",
     "buildw": "tsc -w",
+    "prepublish": "npm build && npm test",
     "test": "wtr \"./test/*.test.js\" --node-resolve"
   },
   "devDependencies": {

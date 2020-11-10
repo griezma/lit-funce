@@ -23,20 +23,33 @@
     <script type="module">
         import './abutton.js'
         import './aclock.js'
-        
+    </script>
+    
+    <script type="module">
         import { defineElement as fce, html } from '../lit-funce.js'
 
+        const noShadow = { shadow: false };
+
+        const props = {
+            who: "you name it"
+        };
+
         fce("a-hey", 
-            ({who}) => html`
-                <h2>hey <span class="red">${who}</span></h2>`, 
-            { who: "string" },
-            { shadow: false });
+            ({ who, init }) => {
+                init?.props(props);
+
+                return html`
+                    <h2>hey <span class="red">${who}</span></h2>
+                `
+            },
+            ['who'],
+            noShadow);
     </script>
 </head>
 <body>
     <h1>lit-funce samples</h1>
 
-    <a-hey who="there"></a-hey>
+    <a-hey who="me"></a-hey>
 
     <section>
         <h2>[a-button]</h2>
