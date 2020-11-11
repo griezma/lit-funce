@@ -16,14 +16,13 @@ Notice the peer dependency to lit-html.
 Define a web component in functional style...
 ```javascript
 // abutton.js
-import { defineElement, html } from 'lit-funce';
+import { funce, html } from 'lit-funce';
 
-// declare props with conversions; 'string'|'number'|'boolean'|(string)=>unknown
-const props = { color: 'string' }
-
-// host is a standard HTMLElement subclass
+// host is an instance of a standard HTMLElement subclass
+// init is same as host but is only injected once (think connectedCallback)
+// `host.props(obj: {[string]: other})` assigns given props to the host element
 function aButton(host) {
-    let { clicked, clicks, color } = host;
+    let { clicked, clicks, color, init } = host;
 
     const style = { backgroundColor: color };
 
@@ -31,24 +30,24 @@ function aButton(host) {
         "please click" : 
         `thank you ${clicks > 1 && `* ${clicks}` || ''}`;
   
-    if (!clicked) {
-        host.clicks = 0;
-        clicked = () => {
+    init?.props({
+        clicks: 0,
+        clicked: () => {
             host.clicks++;
-            host.render();
+            host.render(); 
         }
-        host.clicked = clicked;
-    }
+    });
 
     return html`
-        <button @click=${clicked} style=${style}>${label}</button>
+        <button @click=${host.clicked} style=${style}>${label}</button>
     `;
 }
-// register web component, declare properties
-defineElement("a-button", aButton, props);
+// register web component, declare observed attributes
+funce("a-button", aButton, ['color']);
 ```
 
 ...and use it
+
 ```html
 <!DOCTYPE html>
 <html>

@@ -1,9 +1,12 @@
 import { html, render, TemplateResult } from 'lit-html';
+import throttle from './lib/throttle';
 
-import throttle from './lib/justthrottle';
-import { propsMetaData, PropDefs } from './lib/propsmeta'
-
-export { defineElement, html, render, HostElement };
+export { 
+  funce, 
+  funce as defineElement, 
+  html, 
+  render, 
+  HostElement };
 
 // just do be more specific
 interface HostElement extends HTMLElement {
@@ -22,33 +25,33 @@ const defaultOptions = {
   throttled: 23
 }
 
-function defineElement(
+function funce(
   tag: string,
   renderFn: RenderFunction,
-  props: PropDefs = [],
-  options:  Options = defaultOptions) {
-
+  ...rest) {
+   
+  let [ props, options] = parseLastArgs(rest);
   const { shadow, throttled } = options;
-
-  let propsMeta = propsMetaData(tag, props);
-
+    
   class ElWrapper extends HTMLElement {
 
     static get observedAttributes(): string[] {
-      return propsMeta.getProps();
+      return props;
     }
 
     constructor(public root, private _litRender, public init) {
       super()
-     //console.log("constructor", tag);
+      console.log("constructor", tag);
       if (shadow) {
         this.root = this.attachShadow({mode: 'open'});
       } else {
         this.root = this;
       }
-
       this._litRender = render;
+    }
 
+    connectedCallback() {
+      console.log("connectedCallback", tag);
       this.init = this;
       this.render();
       this.init = null;
@@ -56,19 +59,24 @@ function defineElement(
       if (throttled > 0) {
         this._litRender = throttle(render, throttled);
       }
-    }
-
-    connectedCallback() {
-     //console.log("connectedCallback", tag);
       this.render();
     }
 
     attributeChangedCallback(name: string, old: string, value: string) {
     //  console.log("changed", {name, old, value});
-      
       if (old !== value) {
-        this[name] = propsMeta.convertValue(name, value, this.init);      
+        this[name] = convertByValue(value);      
         this.render();
+      }
+    }
+
+    props(props) {
+      for (let name of Object.keys(props)) {
+        const val = props[name];
+        this[name] = val;
+        if (typeof val === 'function') {
+          val.bind(this);
+        }
       }
     }
 
@@ -79,4 +87,33 @@ function defineElement(
   };
 
   customElements.define(tag, ElWrapper);
+}
+
+function parseLastArgs(args): [string[], Options] {
+  let props: string[] = [];
+  let options: Options = defaultOptions;
+
+  if (args.length === 2) {
+    [props, options] = args;
+  } else if (args.length === 1) {
+    const arg = args[0]; 
+    if (Array.isArray(arg)) {
+      props = arg;
+    } else {
+      options = arg;
+    }
+  }
+  return [props, options];
+}
+
+function convertByValue(val: string): unknown {
+  //console.log("convertByValue", {val});
+  
+  if (!isNaN(+val)) {
+    return +val;
+  }
+  if (["true", "false"].includes(val)) {
+    return Boolean(val);
+  }
+  return val;
 }

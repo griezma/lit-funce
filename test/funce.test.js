@@ -1,15 +1,14 @@
-import { defineElement, html, render } from "/lit-funce.js";
-
 import { expect } from "@esm-bundle/chai/esm/chai.js";
+import { funce, html } from "../lit-funce.js";
 import fixture from "./fixture.js";
 
 const wait = async (ms) => new Promise(res => setTimeout(res, ms));
 
-defineElement("el-button", 
+funce("el-button", 
     ({ label, color }) => html`
         <button style="background-color: ${color}">${label}</button>
     `,
-    {label: "string", color: "string"});
+    ["label", "color"]);
 
 describe("funce", function() {
     it("should render component", async function() {

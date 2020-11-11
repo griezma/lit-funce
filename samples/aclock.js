@@ -1,14 +1,12 @@
-import { defineElement, html } from '../lit-funce.js';
+import { funce, html } from '../lit-funce.js';
 
-function aClock(el) {
-
-    if (el.init) {
-        el._timer = setInterval(el.render, 1);
-    }
-
+function aClock({ init, interval }) {
+    init?.props({
+        _timer: setInterval(init.render, interval)
+    });
     return html`
         <span>${new Date().toISOString()}</span>
     `;
 }
 
-defineElement("a-clock", aClock, "interval", {throttled: 23});
+funce("a-clock", aClock, ['interval'], {throttled: 23});

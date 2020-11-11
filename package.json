@@ -16,7 +16,8 @@
     "lit-funce.ts",
     "lit-funce.d.ts",
     "lit-funce.js.map",
-    "lib"
+    "lib",
+    "test"
   ],
   "scripts": {
     "serve": "wds -a samples/samples.html --node-resolve -wo",

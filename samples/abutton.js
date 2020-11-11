@@ -1,4 +1,4 @@
-import { defineElement, html } from '../lit-funce.js';
+import { funce, html } from '../lit-funce.js';
 import {styleMap} from 'lit-html/directives/style-map.js';
 
 const buttonStyles = {
@@ -33,4 +33,4 @@ function aButton(el) {
   `;
 }
 
-defineElement("a-button", aButton, ['color']);
+funce("a-button", aButton, ['color']);
