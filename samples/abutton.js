@@ -1,4 +1,4 @@
-import { funce, html } from '../lit-funce.js';
+import { defel, html } from '../lit-funce.js';
 import {styleMap} from 'lit-html/directives/style-map.js';
 
 const buttonStyles = {
@@ -9,28 +9,25 @@ const buttonStyles = {
   minWidth: "10em"
 };
 
-function aButton(el) {
-
-  let { clicked, clicks, color } = el;
-
-  if (!clicked) {
-    el.clicks = 0;
-    clicked = () => {
-      el.clicks++;
-      el.render();
-    }
-    el.clicked = clicked;
-  }
+function aButton({ clicks, color, init, label, props, thanks }) {
+  init?.props({
+    clicks: 0,
+    label: init.innerHTML,
+  })
 
   const styles = {...buttonStyles, backgroundColor: color};
 
-  const label = !clicks ? 
-    "please click" : 
-    `thank you ${clicks > 1 && `* ${clicks}` || ''}`;
-  
+  function clicked() {
+    ++clicks;
+    props({ 
+      clicks,
+      label: `${thanks} ${clicks > 1 && `* ${clicks}` || ''}`
+    });
+  }
+
   return html`
     <button @click=${clicked} style=${styleMap(styles)}>${label}</button>
   `;
 }
 
-funce("a-button", aButton, ['color']);
+defel("a-button", ['color', 'thanks'], aButton);

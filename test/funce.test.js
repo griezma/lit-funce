@@ -1,23 +1,43 @@
-import { expect } from "@esm-bundle/chai/esm/chai.js";
-import { funce, html } from "../lit-funce.js";
+import { assert, expect } from "@esm-bundle/chai/esm/chai.js";
+import { defel, html } from "/lit-funce.js";
 import fixture from "./fixture.js";
 
 const wait = async (ms) => new Promise(res => setTimeout(res, ms));
 
-funce("el-button", 
-    ({ label, color }) => html`
-        <button style="background-color: ${color}">${label}</button>
-    `,
-    ["label", "color"]);
+const ElButton = ({ color, init, label, props }) => {
+    init?.props({label: init.innerText});
 
-describe("funce", function() {
-    it("should render component", async function() {
-        const el = fixture(html
-            `<el-button label="click me" color="red"></el-button>`);
-        
-        await wait(51);
-        const button = el.root.firstElementChild;
-        expect(button.innerText).to.be.includes("click me");
-        expect(button.style.backgroundColor).to.be.equal("red");
+    function clicked() {
+        props({label: "thank you"});
+    }
+    return html`
+        <button @click=${clicked} style="background-color: ${color}">${label}</button>
+    `;
+}
+
+defel("el-button", ["color"], ElButton, {throttled: 10});
+
+const appendButton = label => fixture(html`
+    <el-button color="red">${label}</el-button>
+`);
+
+describe("clickable button", function() {
+
+    it("should render a styled button", function() {
+        const elButton = appendButton("click me");
+        const button = elButton.root.firstElementChild;
+        assert.equal(button.innerText, "click me");
+        assert.equal(button.style.backgroundColor, "red");
+    });
+    
+    it("should change text on click", async function() {
+        const elButton = appendButton("click me");
+        const button = elButton.root.firstElementChild;
+        assert.equal(button.innerText, "click me");
+        button.click();
+        await wait(11); // assuming throttled == 10
+        assert.equal(button.innerText, "thank you");
+
+        assert.equal(elButton.initText, "click me");
     });
 });

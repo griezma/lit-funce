@@ -1,4 +1,4 @@
-import throttle from "../lib/throttle.js"
+import throttle from "/lib/throttle.js"
 import { assert } from "@esm-bundle/chai/esm/chai.js";
 
 function challenge(fn, freq=10, timeout=100) {

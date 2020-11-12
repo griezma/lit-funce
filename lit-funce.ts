@@ -2,9 +2,10 @@ import { html, render, TemplateResult } from 'lit-html';
 import throttle from './lib/throttle';
 
 export { 
-  funce, 
-  funce as defineElement, 
-  html, 
+  defel,
+  defineElement, 
+  defineElement as funce, 
+  html,
   render, 
   HostElement };
 
@@ -25,12 +26,34 @@ const defaultOptions = {
   throttled: 23
 }
 
-function funce(
+function defel(tag: string, renderFn: RenderFunction, options?: Options);
+
+function defel(tag: string, props: string[], renderFn: RenderFunction, options?: Options);
+
+function defel(tag: string, ...rest) {
+    let renderFn;
+    let props: string[] = [];
+    let options: Options = defaultOptions;
+
+    for (let arg of rest) {
+      if (Array.isArray(arg)) {
+        props = arg as string[];
+      } else if (typeof arg === "function") {
+        renderFn = arg as RenderFunction;
+      } else {
+        options = arg;
+      }
+    }
+  
+    defineElement(tag, props, renderFn, options);
+}
+
+function defineElement(
   tag: string,
+  props: string[],
   renderFn: RenderFunction,
-  ...rest) {
+  options: Options = defaultOptions) {
    
-  let [ props, options] = parseLastArgs(rest);
   const { shadow, throttled } = options;
     
   class ElWrapper extends HTMLElement {
@@ -39,19 +62,23 @@ function funce(
       return props;
     }
 
-    constructor(public root, private _litRender, public init) {
+    constructor(public root, public init, public initText, private _litRender, private _renderFn) {
       super()
-      console.log("constructor", tag);
+      //console.log("constructor", tag);
       if (shadow) {
         this.root = this.attachShadow({mode: 'open'});
       } else {
         this.root = this;
       }
       this._litRender = render;
+      this._renderFn = renderFn.bind(this);
     }
 
     connectedCallback() {
-      console.log("connectedCallback", tag);
+      // console.log("connectedCallback", tag);
+      // text content not yet ready in constructor
+      this.initText = this.textContent?.trim();
+
       this.init = this;
       this.render();
       this.init = null;
@@ -63,47 +90,40 @@ function funce(
     }
 
     attributeChangedCallback(name: string, old: string, value: string) {
-    //  console.log("changed", {name, old, value});
+    //console.log("changed", {name, old, value});
       if (old !== value) {
         this[name] = convertByValue(value);      
         this.render();
       }
     }
 
-    props(props) {
-      for (let name of Object.keys(props)) {
+    props = (props) => {
+      let changeCount = 0;
+      
+      for (let name in props) {
+        const old = this[name];
         const val = props[name];
-        this[name] = val;
+
         if (typeof val === 'function') {
-          val.bind(this);
+          this[name] = val.bind(this);
+        } else if (old !== val) {
+          changeCount++;
+          this[name] = val;
         }
+      }
+      if (changeCount > 0 && !this.init) {
+        this.render();
       }
     }
 
     render = () => {
-     //console.log("render", tag, {init: !!this.init});
-      this._litRender(renderFn(this), this.root);
+      // console.log("render", tag, {init: !!this.init});
+      const {_litRender, _renderFn } = this;
+      _litRender(_renderFn(this), this.root);
     }
   };
 
   customElements.define(tag, ElWrapper);
-}
-
-function parseLastArgs(args): [string[], Options] {
-  let props: string[] = [];
-  let options: Options = defaultOptions;
-
-  if (args.length === 2) {
-    [props, options] = args;
-  } else if (args.length === 1) {
-    const arg = args[0]; 
-    if (Array.isArray(arg)) {
-      props = arg;
-    } else {
-      options = arg;
-    }
-  }
-  return [props, options];
 }
 
 function convertByValue(val: string): unknown {

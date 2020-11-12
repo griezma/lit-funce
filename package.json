@@ -20,11 +20,13 @@
     "test"
   ],
   "scripts": {
-    "serve": "wds -a samples/samples.html --node-resolve -wo",
     "build": "tsc",
     "buildw": "tsc -w",
-    "prepublish": "npm build && npm test",
-    "test": "wtr \"./test/*.test.js\" --node-resolve"
+    "prepub": "npm build && npm test",
+    "serve": "wds -a samples/samples.html --node-resolve -wo",
+    "test": "wtr \"./test/*.test.js\" --node-resolve --verbose",
+    "testw": "wtr \"./test/*.test.js\" --node-resolve --watch",
+    "help": "echo HINT: run buildw in another terminal before serve or testw"
   },
   "devDependencies": {
     "@esm-bundle/chai": "^4.1.5",

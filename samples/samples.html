@@ -9,8 +9,11 @@
             --button-color: white;
             font-family: 'Segoe UI', Tahoma, sans-serif;
         }
+        body {
+            padding: 16px;
+        }
         section {
-            padding: 8px;
+            margin: 50px 0;
         }
         a-button {
             color: white;
@@ -26,7 +29,7 @@
     </script>
     
     <script type="module">
-        import { funce, html } from '../lit-funce.js'
+        import { defel, html } from '../lit-funce.js'
 
         const noShadow = { shadow: false };
 
@@ -34,7 +37,8 @@
             who: "you name it"
         };
 
-        funce("a-hey", 
+        defel("a-hey", 
+            ["who"],
             ({ who, init }) => {
                 init?.props(props);
                 return html`
@@ -53,12 +57,12 @@
 
     <section>
         <h2>[a-button]</h2>
-        <a-button color="blue"></a-button>
+        <a-button color="blue" thanks="thank you">please click</a-button>
     </section>
 
     <section>
         <h2>[a-clock]</h2>
-        <a-clock interval="800" style="font-size: 3em; color: grey"></a-clock>
+        <a-clock interval="1"></a-clock>
     </section>
 </body>
 </html>
