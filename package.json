@@ -1,6 +1,6 @@
 {
   "name": "lit-funce",
-  "version": "1.0.0-beta.5",
+  "version": "1.0.0-snapshot",
   "author": "griezma",
   "repository": {
     "type": "git",
@@ -26,7 +26,7 @@
     "serve": "wds -a samples/samples.html --node-resolve -wo",
     "test": "wtr \"./test/*.test.js\" --node-resolve --verbose",
     "testw": "wtr \"./test/*.test.js\" --node-resolve --watch",
-    "help": "echo HINT: run buildw in another terminal before serve or testw"
+    "hint": "echo HINT: start 'yarn buildw' in an extra terminal before 'yarn serve' or 'yarn testw'"
   },
   "devDependencies": {
     "@esm-bundle/chai": "^4.1.5",

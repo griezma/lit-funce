@@ -1,10 +1,9 @@
 import { html, render, TemplateResult } from 'lit-html';
-import throttle from './lib/throttle';
+import throttlefn from './lib/throttle';
 
 export { 
-  defel,
+  funce,
   defineElement, 
-  defineElement as funce, 
   html,
   render, 
   HostElement };
@@ -18,30 +17,30 @@ type RenderFunction = (host: HostElement) => TemplateResult;
 
 interface Options {
   shadow: boolean,
-  throttled: number
+  throttle: number
 }
 
 const defaultOptions = {
   shadow: true,
-  throttled: 23
+  throttle: 23
 }
 
-function defel(tag: string, renderFn: RenderFunction, options?: Options);
+function funce(tag: string, renderFn: RenderFunction, options?: Options);
 
-function defel(tag: string, props: string[], renderFn: RenderFunction, options?: Options);
+function funce(tag: string, props: string[], renderFn: RenderFunction, options?: Options);
 
-function defel(tag: string, ...rest) {
+function funce(tag: string, ...rest) {
     let renderFn;
     let props: string[] = [];
     let options: Options = defaultOptions;
 
-    for (let arg of rest) {
+    for (const arg of rest) {
       if (Array.isArray(arg)) {
         props = arg as string[];
       } else if (typeof arg === "function") {
         renderFn = arg as RenderFunction;
       } else {
-        options = arg;
+        options = {...options, ...arg};
       }
     }
   
@@ -53,8 +52,10 @@ function defineElement(
   props: string[],
   renderFn: RenderFunction,
   options: Options = defaultOptions) {
-   
-  const { shadow, throttled } = options;
+
+  // console.log("defineElement", tag, {props, options});
+  
+  const { shadow, throttle: throttleMs } = options;
     
   class ElWrapper extends HTMLElement {
 
@@ -62,11 +63,11 @@ function defineElement(
       return props;
     }
 
-    constructor(public root, public init, public initText, private _litRender, private _renderFn) {
+    constructor(public root, public init, private _litRender, private _renderFn) {
       super()
-      //console.log("constructor", tag);
+      // console.log("constructor", tag, {shadow, throttle: throttleMs});
       if (shadow) {
-        this.root = this.attachShadow({mode: 'open'});
+        this.root = this.attachShadow({ mode: 'open' });
       } else {
         this.root = this;
       }
@@ -77,23 +78,55 @@ function defineElement(
     connectedCallback() {
       // console.log("connectedCallback", tag);
       // text content not yet ready in constructor
-      this.initText = this.textContent?.trim();
-
       this.init = this;
       this.render();
       this.init = null;
 
-      if (throttled > 0) {
-        this._litRender = throttle(render, throttled);
-      }
+      this.throttle(throttleMs);
       this.render();
     }
 
     attributeChangedCallback(name: string, old: string, value: string) {
-    //console.log("changed", {name, old, value});
+    // console.log("changed", {name, old, value});
       if (old !== value) {
-        this[name] = convertByValue(value);      
+        this[name] = guessedConversion(value);      
         this.render();
+      }
+    }
+
+    throttle(timeMs: number) {
+      if (timeMs === 0) {
+        this._litRender = render;
+      } else {
+        this._litRender = throttlefn(render, timeMs);
+      }
+    }
+
+    get childText() {
+      // Note: differs from this.root.childNodes
+      for (const node of this.childNodes) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          return node.nodeValue.trim();
+        }
+      }
+    }
+
+    get rootChild() {
+      return this.root.firstElementChild;
+    }
+
+    get isShady(): boolean {
+      return this.root !== this;
+    }
+
+    shadow(request: (boolean | 'toggle') = true) {
+      // console.log("shadow", {shadowOn: request});
+      if (request === 'toggle') {
+        this.shadow(!this.isShady);
+      } else if (request !== this.isShady) {
+        const oldRoot = this.root;
+        this.root = request ? this.attachShadow({ mode: 'open' }) : this;
+        this.root.append(oldRoot.firstElementChild);
       }
     }
 
@@ -116,6 +149,24 @@ function defineElement(
       }
     }
 
+    dump(context: string = tag) {
+      const props = {};
+      const names = Object.getOwnPropertyNames(this);
+      names.filter(p => typeof this[p] !== 'function')
+        .forEach(p => props[p] = this[p]);
+
+      console.log("dump", context, {
+        self: this,
+        shady: this.isShady,
+        throttle: throttleMs, 
+        props,
+        childText: this.childText,
+        rootChild: this.rootChild,
+        childnodes: this.childNodes, 
+        root: this.root, 
+        rootChildNodes: this.root.childNodes});
+    }
+
     render = () => {
       // console.log("render", tag, {init: !!this.init});
       const {_litRender, _renderFn } = this;
@@ -126,7 +177,7 @@ function defineElement(
   customElements.define(tag, ElWrapper);
 }
 
-function convertByValue(val: string): unknown {
+function guessedConversion(val: string): unknown {
   //console.log("convertByValue", {val});
   
   if (!isNaN(+val)) {
@@ -137,3 +188,4 @@ function convertByValue(val: string): unknown {
   }
   return val;
 }
+

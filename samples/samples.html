@@ -29,7 +29,7 @@
     </script>
     
     <script type="module">
-        import { defel, html } from '../lit-funce.js'
+        import { funce, html } from '../lit-funce.js'
 
         const noShadow = { shadow: false };
 
@@ -37,7 +37,7 @@
             who: "you name it"
         };
 
-        defel("a-hey", 
+        funce("a-hey", 
             ["who"],
             ({ who, init }) => {
                 init?.props(props);

@@ -1,13 +1,19 @@
 import { html, render } from 'lit-html';
 
-let currentID = 1;
+export default function fixture(testHtml, removeLast = true) {
+    const fixclass = "__fix";
+    const { body } = document;
 
-function nextID() {
-    return (++currentID).toString()
-} 
+    if (removeLast) {
+        const last = body.querySelector('.' + fixclass);
+        if (last) {
+            body.removeChild(last);
+        }
+    }
 
-export default function fixture(testHtml) {
-    const id = nextID()
-    render(html`<div id=${id}>${testHtml}</div>`, document.body);
-    return document.getElementById(id).firstElementChild;
+    const div = document.createElement("div");
+    div.className = fixclass;
+    body.appendChild(div);
+    render(html`${testHtml}`, div);
+    return div.firstElementChild;
 }

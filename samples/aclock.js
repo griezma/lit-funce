@@ -1,4 +1,4 @@
-import { defel, html } from '../lit-funce.js';
+import { funce, html } from '../lit-funce.js';
 
 function aClock({ init, interval, props, render, timer, toggle }) {
     init?.props({
@@ -21,4 +21,4 @@ function aClock({ init, interval, props, render, timer, toggle }) {
     `;
 }
 
-defel("a-clock", ['interval'], aClock, {throttled: 23});
+funce("a-clock", ['interval'], aClock, {throttle: 23});

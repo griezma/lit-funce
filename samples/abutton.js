@@ -1,4 +1,4 @@
-import { defel, html } from '../lit-funce.js';
+import { funce, html } from '../lit-funce.js';
 import {styleMap} from 'lit-html/directives/style-map.js';
 
 const buttonStyles = {
@@ -30,4 +30,4 @@ function aButton({ clicks, color, init, label, props, thanks }) {
   `;
 }
 
-defel("a-button", ['color', 'thanks'], aButton);
+funce("a-button", ['color', 'thanks'], aButton);

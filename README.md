@@ -16,7 +16,7 @@ Notice the peer dependency to lit-html.
 Define a web component in functional style...
 ```javascript
 // abutton.js
-import { defel, html } from 'lit-funce';
+import { funce, html } from 'lit-funce';
 
 // host is an instance of a standard HTMLElement subclass
 // init is same as host but is only injected once (think connectedCallback)
@@ -43,7 +43,7 @@ function aButton(host) {
     `;
 }
 // register web component, declare observed attributes
-defel("a-button", ['color'], aButton);
+funce("a-button", ['color'], aButton);
 ```
 
 ...and use it
