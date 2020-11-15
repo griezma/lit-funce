@@ -21,4 +21,4 @@ function aClock({ init, interval, props, render, timer, toggle }) {
     `;
 }
 
-funce("a-clock", ['interval'], aClock, {throttle: 23});
+funce("a-clock", ['interval'], aClock, {throttled: 23});

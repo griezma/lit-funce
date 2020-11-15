@@ -1,10 +1,10 @@
 import { html, render } from 'lit-html';
 
-export default function fixture(testHtml, removeLast = true) {
+export default function fixture(testHtml, removePrior = true) {
     const fixclass = "__fix";
     const { body } = document;
 
-    if (removeLast) {
+    if (removePrior) {
         const last = body.querySelector('.' + fixclass);
         if (last) {
             body.removeChild(last);

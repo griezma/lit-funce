@@ -21,6 +21,13 @@
         .red {
             color: red;
         }
+
+        .funce {
+            color: red;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+        }
     </style>
     
     <script type="module">
@@ -30,31 +37,15 @@
     
     <script type="module">
         import { funce, html } from '../lit-funce.js'
-
-        const noShadow = { shadow: false };
-
-        const props = {
-            who: "you name it"
-        };
-
-        funce("a-hey", 
-            ["who"],
-            ({ who, init }) => {
-                init?.props(props);
-                return html`
-                    <h2>hey <span class="red">${who}</span></h2>
-                `
-            },
-            noShadow);
+        const ce = host => html`<marquee class="funce">f-un ce</marquee>`;
+        funce("f-un", ce, {shadow: false});
     </script>
 </head>
 <body>
     <h1>lit-funce samples</h1>
-
     <section>
-        <a-hey who="me"></a-hey>
+        <f-un>c</f-un><f-un>e</f-un>
     </section>
-
     <section>
         <h2>[a-button]</h2>
         <a-button color="blue" thanks="thank you">please click</a-button>

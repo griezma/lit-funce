@@ -1,12 +1,13 @@
 import { html, render, TemplateResult } from 'lit-html';
-import throttlefn from './lib/throttle';
+import throttle from './lib/throttle';
 
-export { 
+export {
   funce,
-  defineElement, 
+  defineElement,
   html,
-  render, 
-  HostElement };
+  render,
+  HostElement
+};
 
 // just do be more specific
 interface HostElement extends HTMLElement {
@@ -17,12 +18,14 @@ type RenderFunction = (host: HostElement) => TemplateResult;
 
 interface Options {
   shadow: boolean,
-  throttle: number
+  throttled: number,
+  debug: boolean
 }
 
 const defaultOptions = {
   shadow: true,
-  throttle: 23
+  throttled: 23,
+  debug: false
 }
 
 function funce(tag: string, renderFn: RenderFunction, options?: Options);
@@ -30,79 +33,98 @@ function funce(tag: string, renderFn: RenderFunction, options?: Options);
 function funce(tag: string, props: string[], renderFn: RenderFunction, options?: Options);
 
 function funce(tag: string, ...rest) {
-    let renderFn;
-    let props: string[] = [];
-    let options: Options = defaultOptions;
+  let renderFn;
+  let props: string[] = [];
+  let options: Options = defaultOptions;
 
-    for (const arg of rest) {
-      if (Array.isArray(arg)) {
-        props = arg as string[];
-      } else if (typeof arg === "function") {
-        renderFn = arg as RenderFunction;
-      } else {
-        options = {...options, ...arg};
-      }
+  for (const arg of rest) {
+    if (Array.isArray(arg)) {
+      props = arg as string[];
+    } else if (typeof arg === "function") {
+      renderFn = arg as RenderFunction;
+    } else {
+      options = { ...options, ...arg };
     }
-  
-    defineElement(tag, props, renderFn, options);
+  }
+
+  defineElement(tag, props, renderFn, options);
 }
+
+const nop_log = { ...console, log: () => {}};
 
 function defineElement(
   tag: string,
   props: string[],
   renderFn: RenderFunction,
   options: Options = defaultOptions) {
-
-  // console.log("defineElement", tag, {props, options});
   
-  const { shadow, throttle: throttleMs } = options;
+  const { shadow, throttled: throttleMs, debug } = options;
     
+  const logger: Console = debug ? console : nop_log;
+  
+  logger.log("defineElement", tag, {props, options});
+
   class ElWrapper extends HTMLElement {
 
     static get observedAttributes(): string[] {
       return props;
     }
 
-    constructor(public root, public init, private _litRender, private _renderFn) {
+    public init: ElWrapper;
+    private _disposeTask: Function;
+  
+    constructor(public root: ShadowRoot | ElWrapper, private _litRender: Function) {
       super()
-      // console.log("constructor", tag, {shadow, throttle: throttleMs});
+      logger.log("constructor", tag, options);
       if (shadow) {
         this.root = this.attachShadow({ mode: 'open' });
       } else {
         this.root = this;
       }
       this._litRender = render;
-      this._renderFn = renderFn.bind(this);
     }
 
     connectedCallback() {
-      // console.log("connectedCallback", tag);
+      logger.log("connectedCallback", tag);
       // text content not yet ready in constructor
       this.init = this;
       this.render();
       this.init = null;
 
-      this.throttle(throttleMs);
+      this.throttled(throttleMs);
       this.render();
     }
 
+    disconnectedCallback() {
+      logger.log("disconnectedCallback", tag, "dispose", !!(this._disposeTask));
+      if (this._disposeTask) {
+        logger.log("disposing");
+        this._disposeTask();
+      }
+    }
+
     attributeChangedCallback(name: string, old: string, value: string) {
-    // console.log("changed", {name, old, value});
+      logger.log("changed", {name, old, value});
       if (old !== value) {
-        this[name] = guessedConversion(value);      
+        this[name] = convertByValue(value);
         this.render();
       }
     }
 
-    throttle(timeMs: number) {
+    throttled(timeMs: number) {
+      logger.log("throttled", timeMs);
       if (timeMs === 0) {
         this._litRender = render;
       } else {
-        this._litRender = throttlefn(render, timeMs);
+        this._litRender = throttle(render, timeMs);
       }
     }
 
-    get childText() {
+    get host(): ElWrapper {
+      return this;
+    }
+
+    get childText(): string {
       // Note: differs from this.root.childNodes
       for (const node of this.childNodes) {
         if (node.nodeType === Node.TEXT_NODE) {
@@ -111,28 +133,13 @@ function defineElement(
       }
     }
 
-    get rootChild() {
+    get rootChild(): Element {
       return this.root.firstElementChild;
     }
 
-    get isShady(): boolean {
-      return this.root !== this;
-    }
-
-    shadow(request: (boolean | 'toggle') = true) {
-      // console.log("shadow", {shadowOn: request});
-      if (request === 'toggle') {
-        this.shadow(!this.isShady);
-      } else if (request !== this.isShady) {
-        const oldRoot = this.root;
-        this.root = request ? this.attachShadow({ mode: 'open' }) : this;
-        this.root.append(oldRoot.firstElementChild);
-      }
-    }
-
-    props = (props) => {
+    props = (props: {[prop: string]: unknown}) => {
       let changeCount = 0;
-      
+
       for (let name in props) {
         const old = this[name];
         const val = props[name];
@@ -149,37 +156,42 @@ function defineElement(
       }
     }
 
-    dump(context: string = tag) {
+    dispose = (task: Function) => {
+      const old = this._disposeTask;
+      this._disposeTask = task;
+      return old;
+    }
+
+    dump = (context: string = tag) => {
       const props = {};
-      const names = Object.getOwnPropertyNames(this);
-      names.filter(p => typeof this[p] !== 'function')
+
+      Object.getOwnPropertyNames(this)
+        .filter(p => typeof this[p] !== 'function')
         .forEach(p => props[p] = this[p]);
 
-      console.log("dump", context, {
-        self: this,
-        shady: this.isShady,
-        throttle: throttleMs, 
+      logger.info("dump", context, {
+        host: this,
+        shadow: !!this.shadowRoot,
+        throttled: throttleMs,
         props,
         childText: this.childText,
-        rootChild: this.rootChild,
-        childnodes: this.childNodes, 
-        root: this.root, 
-        rootChildNodes: this.root.childNodes});
+        root: this.root,
+        rootChild: this.rootChild
+      });
     }
 
     render = () => {
-      // console.log("render", tag, {init: !!this.init});
-      const {_litRender, _renderFn } = this;
-      _litRender(_renderFn(this), this.root);
+      logger.log("render", tag, {init: !!this.init});
+      this._litRender(renderFn(this), this.root);
     }
   };
 
   customElements.define(tag, ElWrapper);
 }
 
-function guessedConversion(val: string): unknown {
-  //console.log("convertByValue", {val});
-  
+function convertByValue(val: string): unknown {
+  //out.log("convertByValue", {val});
+
   if (!isNaN(+val)) {
     return +val;
   }
@@ -188,4 +200,3 @@ function guessedConversion(val: string): unknown {
   }
   return val;
 }
-

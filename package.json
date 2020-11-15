@@ -1,6 +1,6 @@
 {
   "name": "lit-funce",
-  "version": "1.0.0-snapshot",
+  "version": "1.0.0",
   "author": "griezma",
   "repository": {
     "type": "git",
@@ -22,9 +22,9 @@
   "scripts": {
     "build": "tsc",
     "buildw": "tsc -w",
-    "prepub": "npm build && npm test",
+    "prepublish": "npm build && npm test",
     "serve": "wds -a samples/samples.html --node-resolve -wo",
-    "test": "wtr \"./test/*.test.js\" --node-resolve --verbose",
+    "test": "wtr \"./test/*.test.js\" --node-resolve",
     "testw": "wtr \"./test/*.test.js\" --node-resolve --watch",
     "hint": "echo HINT: start 'yarn buildw' in an extra terminal before 'yarn serve' or 'yarn testw'"
   },
