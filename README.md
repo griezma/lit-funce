@@ -5,10 +5,10 @@ A <sub>funky but not too funcy</sub> helper for writing functional web component
 ## Installation
 ```
 yarn add lit-html
-yarn add lit-funcel
+yarn add lit-funce
 ```
-Or optionally `npm install lit-...`.  
-Notice the peer dependency to lit-html.
+Or optionally `npm install lit-{html, funce}`.  
+There is a peer dependency to lit-html.
 
 
 ## Usage
@@ -17,6 +17,9 @@ Define a web component in functional style...
 ```javascript
 // abutton.js
 import { funce, html } from 'lit-funce';
+
+// register web component, declare observed attributes
+funce("a-button", ['color'], aButton);
 
 // host is an instance of a standard HTMLElement subclass
 // init is same as host but is only injected once (think connectedCallback)
@@ -41,8 +44,7 @@ function aButton({ clicked, clicks, color, init, props }) {
         <button @click=${host.clicked} style=${style}>${label}</button>
     `;
 }
-// register web component, declare observed attributes
-funce("a-button", ['color'], aButton);
+
 ```
 
 ...and use it
@@ -61,8 +63,8 @@ funce("a-button", ['color'], aButton);
 
 ## Init and Dispose
 
-Logic in connectedCallback (init) and disconnectedCallback (dispose) can be expressed using the `init` and `dispose` methods of the host.
-The idiom `init?.*` can be used to invoke a method exclusively in the setup phase (think connectedCallback).
+Logic for `connectedCallback` and `disconnectedCallback` can be expressed using the `init` and `dispose` methods of the host.
+The idiom `init?.*` can be used to invoke a method exclusively in the setup phase (think `connectedCallback`).
 
 ### Clock example
 ```html
