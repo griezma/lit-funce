@@ -99,7 +99,7 @@ function defineElement(
       logger.log("disconnectedCallback", tag, "dispose", !!(this._disposeTask));
       if (this._disposeTask) {
         logger.log("disposing");
-        this._disposeTask();
+        this._disposeTask(this);
       }
     }
 
@@ -109,6 +109,10 @@ function defineElement(
         this[name] = convertByValue(value);
         this.render();
       }
+    }
+
+    adoptedCallback() {
+      console.log("adopted", tag);
     }
 
     throttled(timeMs: number) {
@@ -137,7 +141,8 @@ function defineElement(
       return this.root.firstElementChild;
     }
 
-    props = (props: {[prop: string]: unknown}) => {
+    props = props => {
+      logger.log("props", tag, props, { context: this.constructor.name });
       let changeCount = 0;
 
       for (let name in props) {
@@ -145,7 +150,7 @@ function defineElement(
         const val = props[name];
 
         if (typeof val === 'function') {
-          this[name] = val.bind(this);
+          this[name] = wrapPropFn(val, this, logger);
         } else if (old !== val) {
           changeCount++;
           this[name] = val;
@@ -181,7 +186,7 @@ function defineElement(
     }
 
     render = () => {
-      logger.log("render", tag, {init: !!this.init});
+      //logger.log("render", tag, {init: !!this.init});
       this._litRender(renderFn(this), this.root);
     }
   };
@@ -199,4 +204,14 @@ function convertByValue(val: string): unknown {
     return Boolean(val);
   }
   return val;
+}
+
+function wrapPropFn(fn, host, logger) {
+  return () => {
+    const res = fn.call(null, host);
+    logger.log("wrapPropFn", fn, "props", res);
+    if (res && typeof res === "object") {
+      host.props(res);
+    }
+  }
 }

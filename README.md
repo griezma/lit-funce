@@ -21,9 +21,8 @@ import { funce, html } from 'lit-funce';
 // host is an instance of a standard HTMLElement subclass
 // init is same as host but is only injected once (think connectedCallback)
 // `host.props(obj: {[string]: other})` assigns given props to the host element
-function aButton(host) {
-    let { clicked, clicks, color, init } = host;
-
+function aButton({ clicked, clicks, color, init, props }) {
+   
     const style = { backgroundColor: color };
 
     const label = !clicks ? 
@@ -33,8 +32,8 @@ function aButton(host) {
     init?.props({
         clicks: 0,
         clicked: () => {
-            host.clicks++;
-            host.render(); 
+            clicks++;
+            props({clicks}); 
         }
     });
 
@@ -58,3 +57,45 @@ funce("a-button", ['color'], aButton);
     <a-button color="blue"></a-button>
 </html>
 ```
+
+
+## Init and Dispose
+
+Logic in connectedCallback (init) and disconnectedCallback (dispose) can be expressed using the `init` and `dispose` methods of the host.
+The idiom `init?.*` can be used to invoke a method exclusively in the setup phase (think connectedCallback).
+
+### Clock example
+```html
+<html>
+    <script type="module">
+        import { funce, html } from "../lit-funce.js";
+
+        const millis = () => (Date.now() % 1000).toString().padStart(3, '0');
+
+        funce("c-lock", ["interval"], clock);
+        function clock({ init, interval, render }) {
+            // call init?.props(p: object) to update or extend host properties;
+            // an object result of a function is applied to `props` as well
+            init?.props({
+                timeout: setInterval(render, interval),
+                stop: ({ timeout }) => ({ timeout: clearInterval(timeout) }),
+                start: ({ interval }) => ({ timeout: setInterval(render, interval) })
+            });
+            // call init?.dispose(fn: (host) => any) to hook a dispose function (think disconnnectedCallback) 
+            init?.dispose(({ timeout }) => clearInterval(timeout));
+
+            return html`${new Date().toLocaleTimeString()}.${millis()}`;
+        }
+    </script>
+
+    <c-lock interval="1">Toggle</c-lock>
+
+    <div>
+        <button onclick="document.querySelector('c-lock').start()">Start</Button>
+        <button onclick="document.querySelector('c-lock').stop()">Stop</Button>
+    </div>
+</html>
+```
+
+
+
