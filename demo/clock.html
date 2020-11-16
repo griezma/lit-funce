@@ -2,6 +2,8 @@
     <style>
         :root {
             padding: 16px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: grey;
         }
         c-lock {
             font-family: Impact, sans-serif;
@@ -49,6 +51,28 @@
             clock.stop(); clock.start();
         });
     </script>
+
+    <h1>Clock demo</h1>
+
+    <xmp>
+        const millis = () => (Date.now() % 1000).toString().padStart(3, '0');
+        
+        funce("c-lock", ["interval"], clock);
+        function clock({ init, render }) {
+            // call init?.props(p: object) to update or extend host properties;
+            // an object result of a function is applied to `props` as well
+            init?.props({
+                timeout: setInterval(render, init.interval),
+                toggle: ({ timeout, start, stop }) => timeout ? stop() : start(),
+                stop: ({ timeout }) => ({ timeout: clearInterval(timeout) }),
+                start: ({ interval }) => ({ timeout: setInterval(render, interval) })
+            });
+            // call init?.dispose(fn: (host) => any) to hook a dispose function (think disconnnectedCallback) 
+            init?.dispose(({ timeout }) => clearInterval(timeout));
+
+            return html`${new Date().toLocaleTimeString()}.${millis()}`;
+        }
+    </xmp>
 
     <c-lock interval="1"></c-lock>
 

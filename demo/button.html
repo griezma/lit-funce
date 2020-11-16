@@ -2,6 +2,8 @@
 <style rel="stylesheet">
     :root {
         padding: 16px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: grey;
     }
 
     a-button>button {
@@ -11,6 +13,8 @@
         background-color:inherit;
         border-width: 2px;
         border-radius: 0.3em;
+        color: grey;
+        border-color: grey;
     }
 
     xmp {
@@ -43,6 +47,8 @@
         return html`<button @click=${clicked} style=${style}>${label}</button>`;
     }
 </script>
+
+<h1>A button component</h1>
 
 <xmp>
     <script type="module">
