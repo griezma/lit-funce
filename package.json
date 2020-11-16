@@ -23,7 +23,7 @@
     "build": "tsc",
     "buildw": "tsc -w",
     "prepublish": "npm build && npm test",
-    "serve": "wds -a samples/samples.html --node-resolve -wo",
+    "serve": "wds -a samples/samples.html --node-resolve --cors -wo",
     "test": "wtr \"./test/*.test.js\" --node-resolve",
     "testw": "wtr \"./test/*.test.js\" --node-resolve --watch",
     "hint": "echo HINT: start 'yarn buildw' in an extra terminal before 'yarn serve' or 'yarn testw'"
