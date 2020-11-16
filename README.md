@@ -21,28 +21,34 @@ import { funce, html } from 'lit-funce';
 // register web component, declare observed attributes
 funce("a-button", ['color'], aButton);
 
-// host is an instance of a standard HTMLElement subclass
-// init is same as host but is only injected once (think connectedCallback)
-// `host.props(obj: {[string]: other})` assigns given props to the host element
-function aButton({ clicked, clicks, color, init, props }) {
-   
-    const style = { backgroundColor: color };
+// The custom element is defined by the render function. 
+// The function gets invoked on every update with the 'host' argument.
+// Host is an instance of HTMLElement extended by custom attributes (passed in "funce()") and properties (passed in "Host.props()").
+// Here 'init' and 'props' are host methods (see below), 'color' is an observed attribute, 'clicks' is a custom property (see init.props... below)
+ function aButton({ clicks, color, init, props }) {
+    
+    const style = clicks ? `border-color:${color}; color:${color}` : '';
 
-    const label = !clicks ? 
-        "please click" : 
-        `thank you ${clicks > 1 && `* ${clicks}` || ''}`;
-  
+    const label = !clicks ?
+        "please click" :
+        `thank you ${clicks > 1 && `x ${clicks}` || ''}`;
+
+    // 'init' is the same instance as 'host' but it is only injected on the first invocation (think connectedCallback)
+    // The idiom "init?.foo" can be used to do something only once on first invocation.
+    // Here the host gets extended by a new property 'clicks'
     init?.props({
         clicks: 0,
-        clicked: () => {
-            clicks++;
-            props({clicks}); 
-        }
     });
 
-    return html`
-        <button @click=${host.clicked} style=${style}>${label}</button>
-    `;
+    // The 'props' method can be used to define or update properties on the host
+    // Here props is used to update he clicks property value on the host.
+    function clicked() {
+        return props({clicks: ++clicks});
+    }
+
+    // lit-html is used to render the result. The function must return a valid lit-html template result.
+    // Here the lit-html @event directive is used to bind the click handler.
+    return html`<button @click=${clicked} style=${style}>${label}</button>`;
 }
 ```
 ...and use it
@@ -57,6 +63,9 @@ function aButton({ clicked, clicks, color, init, props }) {
     <a-button color="blue"></a-button>
 </html>
 ```
+
+[See demo...](https://ghcdn.rawgit.org/griezma/lit-funce/main/demo/button.html)
+
 
 ## Init and Dispose
 

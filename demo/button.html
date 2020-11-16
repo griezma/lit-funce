@@ -1,0 +1,74 @@
+<html>
+<style rel="stylesheet">
+    :root {
+        padding: 16px;
+    }
+
+    a-button>button {
+        font-family: Impact, sans-serif;
+        font-size: 2em;
+        min-width: 10em;
+        background-color:inherit;
+        border-width: 2px;
+        border-radius: 0.3em;
+    }
+
+    xmp {
+        font-size: smaller;
+        color: grey;
+        padding: 16px 0;
+        margin-top: 24px;
+    }
+</style>
+<script type="module">
+    import { funce, html } from './lit-funce.js';
+
+    funce("a-button", ['color'], aButton, {shadow: false});
+    function aButton({ clicks, color, init, props }) {
+
+        const style = clicks ? `border-color:${color}; color:${color}` : '';
+
+        const label = !clicks ?
+            "please click" :
+            `thank you ${clicks > 1 && `x ${clicks}` || ''}`;
+
+        init?.props({
+            clicks: 0,
+        });
+
+        function clicked() {
+            return props({clicks: ++clicks});
+        }
+
+        return html`<button @click=${clicked} style=${style}>${label}</button>`;
+    }
+</script>
+
+<xmp>
+    <script type="module">
+        funce("a-button", ['color'], aButton);
+        function aButton({ clicks, color, init, props }) {
+            
+            const style = clicks ? `border-color:${color}; color:${color}` : '';
+        
+            const label = !clicks ?
+                "please click" :
+                `thank you ${clicks > 1 && `x ${clicks}` || ''}`;
+
+            init?.props({
+                clicks: 0,
+            });
+        
+            function clicked() {
+                return props({clicks: ++clicks});
+            }
+            return html`<button @click = ${clicked} style = ${style}>${label}</button>`;
+        }
+    </script>
+    
+    <a-button color="red"></a-button>
+</xmp>
+
+<a-button color="red"></a-button>
+
+</html>
