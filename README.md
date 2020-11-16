@@ -67,6 +67,9 @@ Logic for `connectedCallback` and `disconnectedCallback` can be expressed using 
 The idiom `init?.*` can be used to invoke a method exclusively in the setup phase (think `connectedCallback`).
 
 ### Clock example
+
+<iframe src="https://ghcdn.rawgit.org/griezma/lit-funce/main/demo/clock.html" width="240" height="100" title="Clock Demo"></iframe>
+
 ```html
 <html>
     <script type="module">
