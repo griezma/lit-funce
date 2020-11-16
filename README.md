@@ -1,6 +1,6 @@
 # [lit-funce] lit-html Functional Custom Elements
 
-A <sub>funky but not too funcy</sub> helper for writing functional web components using [lit-html](https://lit-html.polymer-project.org/).
+A <sub>funky, not too funcy</sub> helper for writing functional web components using [lit-html](https://lit-html.polymer-project.org/).
 
 ## Installation
 ```
@@ -44,9 +44,7 @@ function aButton({ clicked, clicks, color, init, props }) {
         <button @click=${host.clicked} style=${style}>${label}</button>
     `;
 }
-
 ```
-
 ...and use it
 
 ```html
@@ -60,15 +58,13 @@ function aButton({ clicked, clicks, color, init, props }) {
 </html>
 ```
 
-
 ## Init and Dispose
 
 Logic for `connectedCallback` and `disconnectedCallback` can be expressed using the `init` and `dispose` methods of the host.
 The idiom `init?.*` can be used to invoke a method exclusively in the setup phase (think `connectedCallback`).
 
-### Clock example
 
-<iframe src="https://ghcdn.rawgit.org/griezma/lit-funce/main/demo/clock.html" width="240" height="100" title="Clock Demo"></iframe>
+### Clock example
 
 ```html
 <html>
@@ -91,16 +87,19 @@ The idiom `init?.*` can be used to invoke a method exclusively in the setup phas
 
             return html`${new Date().toLocaleTimeString()}.${millis()}`;
         }
+
+        window.$ = document.querySelector.bind(document);
     </script>
 
     <c-lock interval="1">Toggle</c-lock>
 
     <div>
-        <button onclick="document.querySelector('c-lock').start()">Start</Button>
-        <button onclick="document.querySelector('c-lock').stop()">Stop</Button>
+        <button onclick="$('c-lock').start()">Start</Button>
+        <button onclick="$('c-lock').stop()">Stop</Button>
     </div>
 </html>
 ```
 
+[See demo...](https://ghcdn.rawgit.org/griezma/lit-funce/main/demo/clock.html)
 
 
