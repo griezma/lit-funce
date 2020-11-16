@@ -1,10 +1,7 @@
 <html>
+    <link rel="stylesheet" href="./style.css">
     <style>
-        :root {
-            padding: 16px;
-            font-family: Arial, Helvetica, sans-serif;
-            color: grey;
-        }
+        
         c-lock {
             font-family: Impact, sans-serif;
             font-size: 3em;
@@ -12,7 +9,7 @@
             display: inline-block;
         }
         .controls {
-            margin-top: 16px;
+            margin-top: 24px;
             display: flex;
             justify-content: space-between;
             width: 17em;
@@ -21,6 +18,7 @@
             direction: rtl;
         }
     </style>
+
     <script type="module">
         import { funce, html } from "./lit-funce.js";
 
@@ -52,27 +50,7 @@
         });
     </script>
 
-    <h1>Clock demo</h1>
-
-    <xmp>
-        const millis = () => (Date.now() % 1000).toString().padStart(3, '0');
-        
-        funce("c-lock", ["interval"], clock);
-        function clock({ init, render }) {
-            // call init?.props(p: object) to update or extend host properties;
-            // an object result of a function is applied to `props` as well
-            init?.props({
-                timeout: setInterval(render, init.interval),
-                toggle: ({ timeout, start, stop }) => timeout ? stop() : start(),
-                stop: ({ timeout }) => ({ timeout: clearInterval(timeout) }),
-                start: ({ interval }) => ({ timeout: setInterval(render, interval) })
-            });
-            // call init?.dispose(fn: (host) => any) to hook a dispose function (think disconnnectedCallback) 
-            init?.dispose(({ timeout }) => clearInterval(timeout));
-
-            return html`${new Date().toLocaleTimeString()}.${millis()}`;
-        }
-    </xmp>
+    <h1>Clock Demo</h1>
 
     <c-lock interval="1"></c-lock>
 
@@ -85,4 +63,52 @@
         </label>
     </div>
 
+    <details>
+        <summary>Source...</summary>
+        <xmp>
+            <script type="module">
+                import { funce, html } from "./lit-funce.js";
+        
+                const millis = () => (Date.now() % 1000).toString().padStart(3, '0');
+        
+                funce("c-lock", ["interval"], clock);
+                function clock({ init, render }) {
+                    // call init?.props(p: object) to update or extend host properties;
+                    // an object result of a function is applied to `props` as well
+                    init?.props({
+                        timeout: setInterval(render, init.interval),
+                        toggle: ({ timeout, start, stop }) => timeout ? stop() : start(),
+                        stop: ({ timeout }) => ({ timeout: clearInterval(timeout) }),
+                        start: ({ interval }) => ({ timeout: setInterval(render, interval) })
+                    });
+                    // call init?.dispose(fn: (host) => any) to hook a dispose function (think disconnnectedCallback) 
+                    init?.dispose(({ timeout }) => clearInterval(timeout));
+        
+                    return html`${new Date().toLocaleTimeString()}.${millis()}`;
+                }
+           
+                window.$ = document.querySelector.bind(document);
+
+                const clock = $("c-lock");
+                $("input").addEventListener("change", ({ target: { value } }) => {
+                    clock.setAttribute("interval", value);
+                    clock.stop(); clock.start();
+                });
+            </script>
+        
+            <h1>Clock Demo</h1>
+        
+            <c-lock interval="1"></c-lock>
+        
+            <div class="controls">
+                <button onclick="$('c-lock').toggle()">Toggle</button>
+                <label>
+                    Slow
+                    <input type="range" name="interval" value="1" min="1" max ="500" step="1">
+                    Fast
+                </label>
+            </div>
+        </xmp>
+    </details>
 </html>
+    

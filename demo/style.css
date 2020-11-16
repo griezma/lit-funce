@@ -1,0 +1,12 @@
+:root {
+    padding: 16px;
+    font-family: Cambria, 'Times New Roman', serif;
+    color: grey;
+}
+h1 {
+    color: blue;
+}
+details {
+    color: #333;
+    margin-top: 32px;
+}
