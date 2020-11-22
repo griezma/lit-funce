@@ -20,9 +20,9 @@
     "test"
   ],
   "scripts": {
+    "prebuild": "rollup -c",
     "build": "tsc",
     "buildw": "tsc -w",
-    "prepublish": "npm build && npm test",
     "serve": "wds -a samples/samples.html --node-resolve --cors -wo",
     "test": "wtr \"./test/*.test.js\" --node-resolve",
     "testw": "wtr \"./test/*.test.js\" --node-resolve --watch",
@@ -33,6 +33,8 @@
     "@web/dev-server": "^0.0.19",
     "@web/test-runner": "^0.9.7",
     "lit-html": "^1.3.0",
+    "rollup": "^2.33.3",
+    "rollup-plugin-terser": "^7.0.2",
     "typescript": "^4.0.5"
   },
   "peerDependencies": {
