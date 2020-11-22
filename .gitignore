@@ -4,4 +4,4 @@ node_modules/
 *.log
 *.d.ts
 *.js.map
-/lit-funce.js
+!/lit-funce.*
