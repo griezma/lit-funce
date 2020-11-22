@@ -1,4 +1,4 @@
-import { html, render, TemplateResult } from 'lit-html';
+import { html, render, TemplateResult } from './lib/lit-html';
 import throttle from './lib/throttle';
 
 export {

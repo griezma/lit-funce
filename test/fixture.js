@@ -1,4 +1,4 @@
-import { html, render } from 'lit-html';
+import { html, render } from '/lib/lit-html.js';
 
 export default function fixture(testHtml, removePrior = true) {
     const fixclass = "__fix";

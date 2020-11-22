@@ -1,4 +1,4 @@
-import { html, render } from 'lit-html';
+import { html, render } from './lib/lit-html';
 import throttle from './lib/throttle';
 export { funce, defineElement, html, render };
 const defaultOptions = {

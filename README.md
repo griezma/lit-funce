@@ -111,4 +111,3 @@ The idiom `init?.*` can be used to invoke a method exclusively in the setup phas
 
 [See demo...](https://ghcdn.rawgit.org/griezma/lit-funce/main/demo/clock.html)
 
-

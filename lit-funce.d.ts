@@ -1,4 +1,4 @@
-import { html, render, TemplateResult } from 'lit-html';
+import { html, render, TemplateResult } from './lib/lit-html';
 export { funce, defineElement, html, render, HostElement };
 interface HostElement extends HTMLElement {
     render(): void;
