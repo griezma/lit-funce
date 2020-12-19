@@ -109,5 +109,5 @@ The idiom `init?.*` can be used to invoke a method exclusively in the setup phas
 </html>
 ```
 
-[See demo...](https://ghcdn.rawgit.org/griezma/lit-funce/main/demo/clock.html)
+[See demo...](https://griezma.github.io/lit-funce/samples.html)
 
