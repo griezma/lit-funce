@@ -64,7 +64,7 @@ funce("a-button", ['color'], aButton);
 </html>
 ```
 
-[See demo...](https://ghcdn.rawgit.org/griezma/lit-funce/main/demo/button.html)
+[See demo...](https://griezma.github.io/lit-funce/demo/button.html)
 
 
 ## Init and Dispose
@@ -109,5 +109,5 @@ The idiom `init?.*` can be used to invoke a method exclusively in the setup phas
 </html>
 ```
 
-[See demo...](https://griezma.github.io/lit-funce/samples/samples.html)
+[See demo...](https://griezma.github.io/lit-funce/samples)
 
