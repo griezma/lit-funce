@@ -1,5 +1,5 @@
-import { html, render } from './lib/lit-html';
-import throttle from './lib/throttle';
+import { html, render } from './lib/lit-html.js';
+import throttle from './lib/throttle.js';
 export { funce, defineElement, html, render };
 const defaultOptions = {
     shadow: true,
