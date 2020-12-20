@@ -69,7 +69,7 @@ funce("a-button", ['color'], aButton);
 
 ## Init and Dispose
 
-Logic for `connectedCallback` and `disconnectedCallback` can be expressed using the `init` and `dispose` methods of the host.
+Logic in `connectedCallback` and `disconnectedCallback` can be expressed using the `init` and `dispose` methods of the host element.
 The idiom `init?.*` can be used to invoke a method exclusively in the setup phase (think `connectedCallback`).
 
 
