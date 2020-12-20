@@ -1,6 +1,7 @@
 import { html, render } from './lib/lit-html.js';
+import { styleMap } from './lib/lit-html/directives/style-map.js';
 import throttle from './lib/throttle.js';
-export { funce, defineElement, html, render };
+export { funce, defineElement, html, render, styleMap };
 const defaultOptions = {
     shadow: true,
     throttled: 23,

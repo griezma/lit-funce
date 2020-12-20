@@ -1,5 +1,4 @@
-import { funce, html } from '../lit-funce.js';
-import {styleMap} from 'lit-html/directives/style-map.js';
+import { funce, html, styleMap } from '../lit-funce.js';
 
 const buttonStyles = {
   border: "none",

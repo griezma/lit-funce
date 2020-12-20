@@ -1,4 +1,5 @@
 import { html, render, TemplateResult } from './lib/lit-html.js';
+import { styleMap } from './lib/lit-html/directives/style-map.js';
 import throttle from './lib/throttle.js';
 
 export {
@@ -6,6 +7,7 @@ export {
   defineElement,
   html,
   render,
+  styleMap,
   HostElement
 };
 

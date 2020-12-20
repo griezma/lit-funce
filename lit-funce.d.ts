@@ -1,5 +1,6 @@
-import { html, render, TemplateResult } from './lib/lit-html';
-export { funce, defineElement, html, render, HostElement };
+import { html, render, TemplateResult } from './lib/lit-html.js';
+import { styleMap } from './lib/lit-html/directives/style-map.js';
+export { funce, defineElement, html, render, styleMap, HostElement };
 interface HostElement extends HTMLElement {
     render(): void;
 }
