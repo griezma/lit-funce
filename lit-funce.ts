@@ -1,5 +1,6 @@
-import { html, render, TemplateResult } from './lib/lit-html.js';
-import { styleMap } from './lib/lit-html/directives/style-map.js';
+import { html, render, styleMap } from './lib/lit-html.js';
+import { TemplateResult } from "lit-html";
+
 import throttle from './lib/throttle.js';
 
 export {

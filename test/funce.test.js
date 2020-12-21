@@ -26,7 +26,7 @@ function AButton({ clicks, color, init, label, props }) {
 funce("a-button", ["color"], AButton, {throttled: 10});
 
 function createButton(label) {
-    console.log("createbutton", labely);
+    console.log("createbutton", label);
     return fixture(html`
          <a-button color="red">${label}</a-button>
     `);

@@ -1,5 +1,4 @@
-import { html, render } from './lib/lit-html.js';
-import { styleMap } from './lib/lit-html/directives/style-map.js';
+import { html, render, styleMap } from './lib/lit-html.js';
 import throttle from './lib/throttle.js';
 export { funce, defineElement, html, render, styleMap };
 const defaultOptions = {
